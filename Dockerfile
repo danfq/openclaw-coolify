@@ -81,17 +81,14 @@ ENV PATH="/usr/local/bin:/usr/local/lib/node_modules/.bin:${PATH}"
 ENV PATH="/root/.local/bin:${PATH}"
 
 # OpenClaw (npm install)
-# OpenClaw (npm install)
 RUN if [ "$OPENCLAW_BETA" = "true" ]; then \
       npm install -g openclaw@beta; \
     else \
       npm install -g openclaw; \
     fi && \
-    OPENCLAW_PATH=$(npm root -g)/openclaw/dist/cli/index.js && \
-    printf '#!/usr/bin/env bash\nnode %s "$@"\n' "$OPENCLAW_PATH" > /usr/local/bin/openclaw && \
-    chmod +x /usr/local/bin/openclaw && \
-    ln -sf /usr/local/bin/openclaw /data/.bun/bin/openclaw && \
-    which openclaw && \
+    OPENCLAW_BIN=$(which openclaw) && \
+    echo "OpenClaw binary: $OPENCLAW_BIN" && \
+    ln -sf "$OPENCLAW_BIN" /data/.bun/bin/openclaw && \
     openclaw --version
 
 
