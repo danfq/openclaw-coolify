@@ -81,18 +81,19 @@ ENV PATH="/usr/local/bin:/usr/local/lib/node_modules/.bin:${PATH}"
 ENV PATH="/root/.local/bin:${PATH}"
 
 # OpenClaw (npm install)
-RUN npm install -g npm@latest && \
-    if [ "$OPENCLAW_BETA" = "true" ]; then \
+# OpenClaw (npm install)
+RUN if [ "$OPENCLAW_BETA" = "true" ]; then \
       npm install -g openclaw@beta; \
     else \
       npm install -g openclaw; \
     fi && \
-    OPENCLAW_PATH=$(npm root -g)/openclaw/bin/openclaw.js && \
-    echo '#!/usr/bin/env bash\nnode '"$OPENCLAW_PATH"' "$@"' > /usr/local/bin/openclaw && \
+    OPENCLAW_PATH=$(npm root -g)/openclaw/dist/cli/index.js && \
+    printf '#!/usr/bin/env bash\nnode %s "$@"\n' "$OPENCLAW_PATH" > /usr/local/bin/openclaw && \
     chmod +x /usr/local/bin/openclaw && \
+    ln -sf /usr/local/bin/openclaw /data/.bun/bin/openclaw && \
     which openclaw && \
     openclaw --version
-RUN ln -sf /usr/local/bin/openclaw /data/.bun/bin/openclaw || true
+
 
 # Install uv explicitly
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
