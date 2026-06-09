@@ -68,7 +68,7 @@ RUN pip3 install ipython csvkit openpyxl python-docx pypdf botasaurus browser-us
 
 # Install signal-cli v0.14.4.1
 RUN SIGNAL_CLI_VERSION="0.14.4.1" && \
-    curl -L "https://github.com/AsamK/signal-cli/releases/download/v${SIGNAL_CLI_VERSION}/signal-cli-${SIGNAL_CLI_VERSION}-Linux-native.tar.gz.asc" -o signal-cli.tar.gz && \
+    curl -L "https://github.com/AsamK/signal-cli/releases/download/v${SIGNAL_CLI_VERSION}/signal-cli-${SIGNAL_CLI_VERSION}-Linux-native.tar.gz" -o signal-cli.tar.gz && \
     tar -xzf signal-cli.tar.gz -C /opt && \
     mv /opt/signal-cli-${SIGNAL_CLI_VERSION} /opt/signal-cli && \
     ln -sf /opt/signal-cli/bin/signal-cli /usr/local/bin/signal-cli && \
