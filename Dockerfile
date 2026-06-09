@@ -67,12 +67,13 @@ RUN pip3 install ipython csvkit openpyxl python-docx pypdf botasaurus browser-us
     playwright install-deps
 
 # Install signal-cli v0.14.4.1
-RUN SIGNAL_CLI_VERSION="0.14.4.1" && \
-    curl -L "https://github.com/AsamK/signal-cli/releases/download/v${SIGNAL_CLI_VERSION}/signal-cli-${SIGNAL_CLI_VERSION}-Linux-native.tar.gz" -o signal-cli.tar.gz && \
-    tar -xzf signal-cli.tar.gz -C /opt && \
-    mv /opt/signal-cli-${SIGNAL_CLI_VERSION} /opt/signal-cli && \
-    ln -sf /opt/signal-cli/bin/signal-cli /usr/local/bin/signal-cli && \
-    rm signal-cli.tar.gz
+RUN set -eux; \
+    curl -fL "https://github.com/AsamK/signal-cli/releases/download/v${SIGNAL_CLI_VERSION}/signal-cli-${SIGNAL_CLI_VERSION}-Linux-native.tar.gz" -o /tmp/signal-cli.tar.gz; \
+    tar -xzf /tmp/signal-cli.tar.gz -C /opt; \
+    ls -la /opt; \
+    mv "/opt/signal-cli-${SIGNAL_CLI_VERSION}-Linux-native" /opt/signal-cli; \
+    ln -sf /opt/signal-cli/bin/signal-cli /usr/local/bin/signal-cli; \
+    rm /tmp/signal-cli.tar.gz
 
 ENV XDG_CACHE_HOME="/data/.cache"
 
