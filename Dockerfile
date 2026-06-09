@@ -35,6 +35,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     docker.io \
     && rm -rf /var/lib/apt/lists/*
 
+# Install Java 25 (Eclipse Temurin)
+RUN mkdir -p /opt/java && \
+    curl -L "https://api.adoptium.net/v3/binary/latest/25/ga/linux/x64/jdk/hotspot/normal/eclipse?project=jdk" -o /opt/java/openjdk.tar.gz && \
+    tar -xzf /opt/java/openjdk.tar.gz -C /opt/java --strip-components=1 && \
+    rm /opt/java/openjdk.tar.gz
+
+ENV JAVA_HOME=/opt/java \
+    PATH="/opt/java/bin:${PATH}"
+
 # 🔥 CRITICAL FIX (native modules)
 ENV PYTHON=/usr/bin/python3 \
     npm_config_python=/usr/bin/python3
@@ -56,6 +65,14 @@ RUN curl -fsSL https://bun.sh/install | bash
 # Python tools
 RUN pip3 install ipython csvkit openpyxl python-docx pypdf botasaurus browser-use playwright --break-system-packages && \
     playwright install-deps
+
+# Install signal-cli v0.14.4.1
+RUN SIGNAL_CLI_VERSION="0.14.4.1" && \
+    curl -L "https://github.com/AsamK/signal-cli/releases/download/v${SIGNAL_CLI_VERSION}/signal-cli-${SIGNAL_CLI_VERSION}-Linux.tar.gz" -o signal-cli.tar.gz && \
+    tar -xzf signal-cli.tar.gz -C /opt && \
+    mv /opt/signal-cli-${SIGNAL_CLI_VERSION} /opt/signal-cli && \
+    ln -sf /opt/signal-cli/bin/signal-cli /usr/local/bin/signal-cli && \
+    rm signal-cli.tar.gz
 
 ENV XDG_CACHE_HOME="/data/.cache"
 
