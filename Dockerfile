@@ -125,6 +125,9 @@ RUN ln -sf /opt/signal-cli/bin/signal-cli /usr/local/bin/signal-cli
 WORKDIR /app
 COPY . .
 
+RUN sed -i '/JAVA_HOME/d' /data/.bashrc 2>/dev/null || true && \
+    sed -i '/jdk-25/d' /data/.bashrc 2>/dev/null || true
+
 # Symlinks
 RUN ln -sf /data/.claude/bin/claude /usr/local/bin/claude || true && \
     ln -sf /data/.kimi/bin/kimi /usr/local/bin/kimi || true && \
