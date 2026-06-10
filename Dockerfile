@@ -72,7 +72,6 @@ RUN set -eux; \
     curl -fL "https://github.com/AsamK/signal-cli/releases/download/v${SIGNAL_CLI_VERSION}/signal-cli-${SIGNAL_CLI_VERSION}.tar.gz" -o /tmp/signal-cli.tar.gz; \
     mkdir -p /opt/signal-cli; \
     tar -xzf /tmp/signal-cli.tar.gz -C /opt/signal-cli --strip-components=1; \
-    ln -sf /opt/signal-cli/bin/signal-cli /usr/local/bin/signal-cli; \
     rm /tmp/signal-cli.tar.gz
 
 ENV XDG_CACHE_HOME="/data/.cache"
@@ -137,6 +136,10 @@ RUN ln -sf /data/.claude/bin/claude /usr/local/bin/claude || true && \
 # ensure JAVA_HOME in PATH
 ENV JAVA_HOME=/opt/java
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
+
+# ensure signal-cli in PATH
+ENV SIGNAL_CLI_PATH=/opt/signal-cli
+ENV PATH="${SIGNAL_CLI_PATH}/bin:${PATH}"
 
 ENV PATH="/root/.local/bin:/usr/local/lib/node_modules/.bin:/usr/local/go/bin:/usr/local/bin:/usr/bin:/bin:/data/.bun/bin:/data/.bun/install/global/bin:/data/.claude/bin:/data/.kimi/bin:${PATH}"
 EXPOSE 18789
