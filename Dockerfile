@@ -65,11 +65,12 @@ RUN pip3 install ipython csvkit openpyxl python-docx pypdf botasaurus browser-us
 
 # Install signal-cli v0.14.4.1 (Linux-native) - moved to /usr/share/signal-cli to avoid shadowing
 RUN set -eux; \
-    SIGNAL_CLI_VERSION="0.14.4.1"; \
-    curl -fL "https://github.com/AsamK/signal-cli/releases/download/v${SIGNAL_CLI_VERSION}/signal-cli-${SIGNAL_CLI_VERSION}.tar.gz" -o /tmp/signal-cli.tar.gz; \
+    git clone https://github.com/AsamK/signal-cli /tmp/signal-cli-src; \
+    cd /tmp/signal-cli-src; \
+    ./reproducible-builds/build.sh; \
     mkdir -p /opt/signal-cli; \
-    tar -xzf /tmp/signal-cli.tar.gz -C /opt/signal-cli --strip-components=1; \
-    rm /tmp/signal-cli.tar.gz
+    tar -xzf /tmp/signal-cli-src/dist/signal-cli-*.tar.gz -C /opt/signal-cli --strip-components=1; \
+    rm -rf /tmp/signal-cli-src
 
 ENV XDG_CACHE_HOME="/data/.cache"
 
