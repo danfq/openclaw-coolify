@@ -66,12 +66,12 @@ RUN curl -fsSL https://bun.sh/install | bash
 RUN pip3 install ipython csvkit openpyxl python-docx pypdf botasaurus browser-use playwright --break-system-packages && \
     playwright install-deps
 
-# Install signal-cli v0.14.4.1
+# Install signal-cli v0.14.4.1 (Linux-native)
 RUN set -eux; \
     SIGNAL_CLI_VERSION="0.14.4.1"; \
     curl -fL "https://github.com/AsamK/signal-cli/releases/download/v${SIGNAL_CLI_VERSION}/signal-cli-${SIGNAL_CLI_VERSION}-Linux-native.tar.gz" -o /tmp/signal-cli.tar.gz; \
-    tar -xzf /tmp/signal-cli.tar.gz -C /opt; \
-    mv "/opt/signal-cli-${SIGNAL_CLI_VERSION}-Linux-native" /opt/signal-cli; \
+    mkdir -p /opt/signal-cli; \
+    tar -xzf /tmp/signal-cli.tar.gz -C /opt/signal-cli --strip-components=1; \
     ln -sf /opt/signal-cli/bin/signal-cli /usr/local/bin/signal-cli; \
     rm /tmp/signal-cli.tar.gz
 
@@ -111,7 +111,7 @@ RUN if [ "$OPENCLAW_BETA" = "true" ]; then \
 
 
 # Install uv explicitly
-RUN curl -LsSf https://astral.sh/uv/install.sh | h
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Claude + Kimi
 RUN curl -fsSL https://claude.ai/install.sh | bash && \
