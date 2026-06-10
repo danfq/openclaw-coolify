@@ -37,7 +37,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Install Java 25 (Eclipse Temurin)
 RUN mkdir -p /opt/java && \
-    curl -L "https://api.adoptium.net/v3/binary/latest/25/ga/linux/x64/jdk/hotspot/normal/eclipse?project=jdk" -o /opt/java/openjdk.tar.gz && \
+    curl -fL "https://api.adoptium.net/v3/binary/latest/25/ga/linux/x64/jdk/hotspot/normal/eclipse?project=jdk" -o /opt/java/openjdk.tar.gz && \
     tar -xzf /opt/java/openjdk.tar.gz -C /opt/java --strip-components=1 && \
     rm /opt/java/openjdk.tar.gz
 
@@ -68,9 +68,9 @@ RUN pip3 install ipython csvkit openpyxl python-docx pypdf botasaurus browser-us
 
 # Install signal-cli v0.14.4.1
 RUN set -eux; \
+    SIGNAL_CLI_VERSION="0.14.4.1"; \
     curl -fL "https://github.com/AsamK/signal-cli/releases/download/v${SIGNAL_CLI_VERSION}/signal-cli-${SIGNAL_CLI_VERSION}-Linux-native.tar.gz" -o /tmp/signal-cli.tar.gz; \
     tar -xzf /tmp/signal-cli.tar.gz -C /opt; \
-    ls -la /opt; \
     mv "/opt/signal-cli-${SIGNAL_CLI_VERSION}-Linux-native" /opt/signal-cli; \
     ln -sf /opt/signal-cli/bin/signal-cli /usr/local/bin/signal-cli; \
     rm /tmp/signal-cli.tar.gz
@@ -111,7 +111,7 @@ RUN if [ "$OPENCLAW_BETA" = "true" ]; then \
 
 
 # Install uv explicitly
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+RUN curl -LsSf https://astral.sh/uv/install.sh | h
 
 # Claude + Kimi
 RUN curl -fsSL https://claude.ai/install.sh | bash && \
