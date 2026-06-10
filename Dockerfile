@@ -123,6 +123,9 @@ RUN curl -fsSL https://claude.ai/install.sh | bash && \
 ########################################
 FROM dependencies AS final
 
+# Ensure signal-cli binary and symlink are in the final stage's PATH
+RUN ln -sf /opt/signal-cli/bin/signal-cli /usr/local/bin/signal-cli
+
 WORKDIR /app
 COPY . .
 
