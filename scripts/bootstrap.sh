@@ -5,6 +5,15 @@ if [ -f "/app/scripts/migrate-to-data.sh" ]; then
     bash "/app/scripts/migrate-to-data.sh"
 fi
 
+# Ensure signal-cli is in /data (persistent)
+if [ ! -d "/data/signal-cli" ] && [ -d "/usr/share/signal-cli" ]; then
+    echo "📦 Seeding signal-cli to /data/signal-cli..."
+    cp -r /usr/share/signal-cli /data/signal-cli
+fi
+
+# Ensure symlink is correct at runtime
+ln -sf /data/signal-cli/bin/signal-cli /usr/local/bin/signal-cli
+
 OPENCLAW_STATE="${OPENCLAW_STATE_DIR:-/data/.openclaw}"
 CONFIG_FILE="$OPENCLAW_STATE/openclaw.json"
 WORKSPACE_DIR="${OPENCLAW_WORKSPACE:-/data/openclaw-workspace}"
@@ -56,10 +65,10 @@ seed_agent() {
   fi
 
   # fallback for other agents
-  cat >"$dir/SOUL.md" <<EOF
-# SOUL.md - $name
+  cat >"$dir/SOUL.md" <<EOT
+# SOUL.md - \$name
 You are OpenClaw, a helpful and premium AI assistant.
-EOF
+EOT
 }
 
 seed_agent "main" "OpenClaw"
@@ -70,7 +79,7 @@ seed_agent "main" "OpenClaw"
 if [ ! -f "$CONFIG_FILE" ]; then
   echo "🏥 Generating openclaw.json with Prime Directive..."
   TOKEN=$(openssl rand -hex 24 2>/dev/null || node -e "console.log(require('crypto').randomBytes(24).toString('hex'))")
-  cat >"$CONFIG_FILE" <<EOF
+  cat >"$CONFIG_FILE" <<EOT
 {
 "commands": {
     "native": true,
@@ -105,7 +114,7 @@ if [ ! -f "$CONFIG_FILE" ]; then
     }
   },
   "gateway": {
-  "port": $OPENCLAW_GATEWAY_PORT,
+  "port": \$OPENCLAW_GATEWAY_PORT,
   "mode": "local",
     "bind": "lan",
     "controlUi": {
@@ -119,11 +128,11 @@ if [ ! -f "$CONFIG_FILE" ]; then
       "mode": "off",
       "resetOnExit": false
     },
-    "auth": { "mode": "token", "token": "$TOKEN" }
+    "auth": { "mode": "token", "token": "\$TOKEN" }
   },
   "agents": {
     "defaults": {
-      "workspace": "$WORKSPACE_DIR",
+      "workspace": "\$WORKSPACE_DIR",
       "envelopeTimestamp": "on",
       "envelopeElapsed": "on",
       "cliBackends": {},
@@ -140,11 +149,11 @@ if [ ! -f "$CONFIG_FILE" ]; then
       }
     },
     "list": [
-      { "id": "main","default": true, "name": "default",  "workspace": "${OPENCLAW_WORKSPACE:-/data/openclaw-workspace}"}
+      { "id": "main","default": true, "name": "default",  "workspace": "\${OPENCLAW_WORKSPACE:-/data/openclaw-workspace}"}
     ]
   }
 }
-EOF
+EOT
 fi
 
 # ----------------------------
@@ -196,9 +205,9 @@ echo "=================================================================="
 echo ""
 echo "🔑 Access Token: $TOKEN"
 echo ""
-echo "🌍 Service URL (Local): http://localhost:${OPENCLAW_GATEWAY_PORT:-18789}?token=$TOKEN"
+echo "🌍 Service URL (Local): http://localhost:\${OPENCLAW_GATEWAY_PORT:-18789}?token=$TOKEN"
 if [ -n "$SERVICE_FQDN_OPENCLAW" ]; then
-    echo "☁️  Service URL (Public): https://${SERVICE_FQDN_OPENCLAW}?token=$TOKEN"
+    echo "☁️  Service URL (Public): https://\${SERVICE_FQDN_OPENCLAW}?token=$TOKEN"
     echo "    (Wait for cloud tunnel to propagate if just started)"
 fi
 echo ""
@@ -210,5 +219,5 @@ echo "   3. To start the onboarding wizard:"
 echo "      openclaw onboard"
 echo ""
 echo "=================================================================="
-echo "🔧 Current ulimit is: $(ulimit -n)"
+echo "🔧 Current ulimit is: \$(ulimit -n)"
 exec openclaw gateway run

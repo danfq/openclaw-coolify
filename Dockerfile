@@ -66,13 +66,13 @@ RUN curl -fsSL https://bun.sh/install | bash
 RUN pip3 install ipython csvkit openpyxl python-docx pypdf botasaurus browser-use playwright --break-system-packages && \
     playwright install-deps
 
-# Install signal-cli v0.14.4.1 (Linux-native)
+# Install signal-cli v0.14.4.1 (Linux-native) - moved to /usr/share/signal-cli to avoid shadowing
 RUN set -eux; \
     SIGNAL_CLI_VERSION="0.14.4.1"; \
     curl -fL "https://github.com/AsamK/signal-cli/releases/download/v${SIGNAL_CLI_VERSION}/signal-cli-${SIGNAL_CLI_VERSION}-Linux-native.tar.gz" -o /tmp/signal-cli.tar.gz; \
-    mkdir -p /opt/signal-cli; \
-    tar -xzf /tmp/signal-cli.tar.gz -C /opt/signal-cli --strip-components=1; \
-    ln -sf /opt/signal-cli/bin/signal-cli /usr/local/bin/signal-cli; \
+    mkdir -p /usr/share/signal-cli; \
+    tar -xzf /tmp/signal-cli.tar.gz -C /usr/share/signal-cli --strip-components=1; \
+    ln -sf /data/signal-cli/bin/signal-cli /usr/local/bin/signal-cli; \
     rm /tmp/signal-cli.tar.gz
 
 ENV XDG_CACHE_HOME="/data/.cache"
@@ -124,7 +124,7 @@ RUN curl -fsSL https://claude.ai/install.sh | bash && \
 FROM dependencies AS final
 
 # Ensure signal-cli binary and symlink are in the final stage's PATH
-RUN ln -sf /opt/signal-cli/bin/signal-cli /usr/local/bin/signal-cli
+RUN ln -sf /data/signal-cli/bin/signal-cli /usr/local/bin/signal-cli
 
 WORKDIR /app
 COPY . .
