@@ -130,14 +130,10 @@ RUN ln -sf /data/.claude/bin/claude /usr/local/bin/claude || true && \
     ln -sf /data/.kimi/bin/kimi /usr/local/bin/kimi || true && \
     chmod +x /app/scripts/*.sh
 
-# ensure JAVA_HOME in PATH
-ENV JAVA_HOME=/opt/java
-ENV PATH="${JAVA_HOME}/bin:${PATH}"
+# PATH
+ENV JAVA_HOME=/opt/java \
+    SIGNAL_CLI_HOME=/opt/signal-cli \
+    PATH="/opt/java/bin:/opt/signal-cli/bin:/root/.local/bin:/usr/local/lib/node_modules/.bin:/usr/local/go/bin:/usr/local/bin:/usr/bin:/bin:/data/.bun/bin:/data/.bun/install/global/bin:/data/.claude/bin:/data/.kimi/bin"
 
-# ensure signal-cli in PATH
-ENV SIGNAL_CLI_PATH=/opt/signal-cli
-ENV PATH="${SIGNAL_CLI_PATH}/bin:${PATH}"
-
-ENV PATH="/root/.local/bin:/usr/local/lib/node_modules/.bin:/usr/local/go/bin:/usr/local/bin:/usr/bin:/bin:/data/.bun/bin:/data/.bun/install/global/bin:/data/.claude/bin:/data/.kimi/bin:${PATH}"
 EXPOSE 18789
 CMD ["bash", "/app/scripts/bootstrap.sh"]
