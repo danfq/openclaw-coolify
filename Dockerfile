@@ -41,9 +41,6 @@ RUN mkdir -p /opt/java && \
     tar -xzf /opt/java/openjdk.tar.gz -C /opt/java --strip-components=1 && \
     rm /opt/java/openjdk.tar.gz
 
-ENV JAVA_HOME=/opt/java \
-    PATH="/opt/java/bin:${PATH}"
-
 # 🔥 CRITICAL FIX (native modules)
 ENV PYTHON=/usr/bin/python3 \
     npm_config_python=/usr/bin/python3
