@@ -65,12 +65,14 @@ RUN pip3 install ipython csvkit openpyxl python-docx pypdf botasaurus browser-us
 
 # Install signal-cli v0.14.4.1 (Linux-native) - moved to /usr/share/signal-cli to avoid shadowing
 RUN set -eux; \
+    apt-get update && apt-get install -y --no-install-recommends gradle && \
+    rm -rf /var/lib/apt/lists/*; \
     git clone https://github.com/AsamK/signal-cli /tmp/signal-cli-src; \
     cd /tmp/signal-cli-src; \
-    ./reproducible-builds/build.sh; \
+    ./gradlew installDist; \
     mkdir -p /opt/signal-cli; \
-    tar -xzf /tmp/signal-cli-src/dist/signal-cli-*.tar.gz -C /opt/signal-cli --strip-components=1; \
-    rm -rf /tmp/signal-cli-src
+    cp -r build/install/signal-cli/* /opt/signal-cli/; \
+    rm -rf /tmp/signal-cli-src ~/.gradle
 
 ENV XDG_CACHE_HOME="/data/.cache"
 
